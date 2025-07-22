@@ -160,40 +160,36 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Validate image file
-            'password' => 'nullable|min:8',
+            'password' => 'nullable|string|min:8',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = Auth::user(); // Get logged-in user
+        $user = Auth::user();
+        $user->name = $request->name;
 
-        // Update user data
-        $user->name = $request->input(['name', 'username', 'is_active']);
-
-        // Handle photo upload
-        if ($request->hasFile('avatar')) {
-            // Delete the old photo if it exists
-            if ($user->avatar && file_exists(public_path('uploads/users/' . $user->avatar))) {
-                unlink(public_path('uploads/users/' . $user->avatar));
-            }
-
-            // Store the new photo and update the user record
-            $user->avatar = $request->file('avatar')->store('uploads/users/', 'public');
-        }
-
-        // Handle password update
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('avatar')) {
+            $oldAvatarPath = public_path('uploads/users/' . $user->avatar);
+            if ($user->avatar && file_exists($oldAvatarPath)) {
+                unlink($oldAvatarPath);
+            }
+
+            $avatarName = time() . '.' . $request->avatar->extension();
+            $request->avatar->move(public_path('uploads/users'), $avatarName);
+            $user->avatar = $avatarName;
         }
 
         $user->save();
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Profile berhasil diperbarui.',
+            'message' => 'Profil berhasil diperbarui.',
             'profile' => [
                 'name' => $user->name,
                 'avatar' => $user->avatar ? asset('uploads/users/' . $user->avatar) : null,

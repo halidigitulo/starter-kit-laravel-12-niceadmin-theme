@@ -50,7 +50,8 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('{id}', [UserController::class, 'storeOrUpdate'])->name('users.update');
         Route::get('{id}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('users.updateProfile');
+        Route::get('profile', [UserController::class, 'profile'])->name('users.profile');
+        Route::post('profile/update', [UserController::class, 'updateProfile'])->name('users.updateProfile');
     });
 
     Route::group(['prefix'=>'profile/'],function(){
