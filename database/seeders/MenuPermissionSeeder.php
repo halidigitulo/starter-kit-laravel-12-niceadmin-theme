@@ -26,7 +26,7 @@ class MenuPermissionSeeder extends Seeder
                 'name' => 'Settings',
                 'url' => '/settings',
                 'icon' => 'settings-line',
-                'permission' => 'setings.read',
+                'permission' => null,
                 'sort_order' => 2,
             ],
             [
@@ -61,7 +61,7 @@ class MenuPermissionSeeder extends Seeder
                 'name' => 'Profile',
                 'url' => '/profile',
                 'icon' => 'community-line',
-                'permission' => 'profiles.read',
+                'permission' => null,
                 'sort_order' => 7,
             ]
         ];
