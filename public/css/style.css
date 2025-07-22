@@ -1,0 +1,211 @@
+@import url('https://rsms.me/inter/inter.css');
+
+:root {
+    --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+}
+
+body {
+    font-feature-settings: "cv03", "cv04", "cv11";
+}
+
+.ts-dropdown {
+    z-index: 1056 !important;
+    position: absolute !important;
+}
+
+.modal {
+    overflow: visible !important;
+}
+
+.modal .modal-dialog {
+    overflow: visible !important;
+}
+
+#sidebarPreview ul {
+    list-style-type: none;
+    padding-left: 15px;
+}
+#sidebarPreview li {
+    padding: 5px 0;
+}
+
+.table td {
+        vertical-align: middle;
+    }
+    
+.card {
+    /* opacity: 1; */
+    transition: opacity 0.5s ease-in-out;
+    background: linear-gradient(135deg, #ffffff, #f4f4f4);
+    /* background: linear-gradient(135deg, #6a11cb, #2575fc); */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card-loket {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.918);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    padding: 15px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.card-title {
+    color: #ffffff;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card.visible {
+    opacity: 1;
+}
+
+.card:hover {
+    /* transform: translateY(-5px); */
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    z-index: -1;
+}
+
+.card-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.card-btn:hover {
+    color: #ff758c;
+    background: linear-gradient(135deg, #ffffff, #f8f8f8);
+    /* transform: translateY(-3px); */
+}
+
+
+
+.content {
+    position: relative;
+    z-index: 2;
+    /* Place content above the overlay */
+    text-align: center;
+    color: #333;
+    /* Darker text for contrast */
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.vr {
+    margin-left: 5px;
+    margin-right: 5px;
+    border-right: 1px solid #000;
+}
+
+h4 {
+    line-height: 1.2;
+}
+
+/* Sidebar collapsed state */
+body.sidebar-collapsed .sidebar {
+    display: none;
+    /* Hide the sidebar */
+}
+
+/* Sidebar expanded state (default) */
+body:not(.sidebar-collapsed) .sidebar {
+    display: block;
+    /* Show the sidebar */
+}
+
+/* Sidebar collapsed state (optional custom styles) */
+body.sidebar-collapsed .sidebar {
+    width: 0;
+    /* Adjust width of collapsed sidebar */
+    transition: width 0.3s ease;
+}
+
+/* Content adjusts accordingly */
+body.sidebar-collapsed .content {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+
+h1 {
+    font-size: 3rem;
+    /* Default size */
+}
+
+.scrollable-table {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.scrollable-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scrollable-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+}
+
+#called-queue {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #28a745;
+    /* Green color for called queue */
+}
+
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 3rem;
+        /* For tablets and smaller desktops */
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.8rem;
+        /* For smaller tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 2.2rem;
+        /* For mobile devices */
+    }
+}
