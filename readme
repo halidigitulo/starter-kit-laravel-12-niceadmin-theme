@@ -1,0 +1,11 @@
+Cara install proyek Starter Kit Laravel 12
+------------------------------------
+1. clone dari github: https://github.com/halidigitulo/starter-kit-laravel-12.git
+2. masuk ke direktori proyek: `cd starter-kit-laravel-12`
+3. install dependensi: `composer install`
+4. buat file `.env` dari `.env.example`: `cp .env.example .env`
+5. sesuaikan konfigurasi database pada file `.env` sesuai dengan database yang digunakan.
+6. generate key aplikasi: `php artisan key:generate`
+7. migrasi database: `php artisan migrate`
+8. seeder database: `php artisan db:seed`
+9. jalankan server: `php artisan serve`

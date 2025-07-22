@@ -20,7 +20,7 @@
                 </li>
             @endforeach
         </ul>
-
+        <h5 class="mt-3">Drag and drop to reorder</h5>
         <button class="btn btn-success mt-3" id="saveOrder">Simpan Urutan</button>
     </div>
     <div class="col-md-6">

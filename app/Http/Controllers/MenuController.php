@@ -15,6 +15,9 @@ class MenuController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($user) {
+                    if (!auth()->user()->can('menus.update') && !auth()->user()->can('menus.delete')) {
+                        return '<span class="text-muted">No Access</span>';
+                    }
                     $editButton = '<button class="btn btn-warning btn-sm edit-user" data-id="' . $user->id . '" name="edit"><i class="ri-pencil-line"></i></button>';
                     $spasi = ' ';
                     if ($user->is_protected) {

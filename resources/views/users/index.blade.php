@@ -8,12 +8,14 @@
                     <h4 class="card-title"><i class="ri-settings-line"></i> @yield('title')</h4>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                                <a href="" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
-                                    data-bs-target="#userModal" id="addUserButton"><i class="ri-add-line"></i> Add User</a>
+                    @can('users.create')
+                        <div class="row">
+                            <div class="col">
+                                    <a href="" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
+                                        data-bs-target="#userModal" id="addUserButton"><i class="ri-add-line"></i> Add User</a>
+                            </div>
                         </div>
-                    </div>
+                    @endcan
                     <div class="row">
                         <div class="col table-responsive">
                             <table id="table_user" class="table table-hover table-striped table-sm">

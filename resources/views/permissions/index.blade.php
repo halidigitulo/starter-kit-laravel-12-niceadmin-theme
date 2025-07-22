@@ -10,18 +10,21 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
+                            @can('permissions.create')
+                                
                             <form id="generate-permission-form">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="modules">Nama Modul (pisahkan dengan koma):</label>
                                     <input type="text" id="modules" name="modules" class="form-control"
-                                        placeholder="Contoh: user,role,menu,article">
+                                    placeholder="Contoh: user,role,menu,article">
                                 </div>
                                 <button type="submit" id="generate-permission-btn"
-                                    class="btn btn-primary">Generate</button>
+                                class="btn btn-primary">Generate</button>
                             </form>
-
+                            
                             <div id="result" class="mt-3"></div>
+                            @endcan
                         </div>
                     </div>
                     <div class="row">

@@ -156,11 +156,13 @@
                                             {{-- <textarea id="isi" rows="15" name="isi">{{ $profile->isi }}</textarea> --}}
                                             <textarea name="isi" id="isi">{{ $profile->isi }}</textarea>
                                         </div>
-                                        <div class="mt-3">
-                                            <button class="btn btn-primary" type="submit"><i
-                                                    class="ri-send-plane-line"></i>
-                                                Submit</button>
-                                        </div>
+                                        @can('profile.update')
+                                            <div class="mt-3">
+                                                <button class="btn btn-primary" type="submit"><i
+                                                        class="ri-send-plane-line"></i>
+                                                    Submit</button>
+                                            </div>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

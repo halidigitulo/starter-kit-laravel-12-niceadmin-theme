@@ -17,6 +17,9 @@ class PermissionController extends Controller
             $permissions = Permission::select('id', 'name')->get();
             return datatables()->of($permissions)
                 ->addColumn('aksi', function ($permission) {
+                    if (!auth()->user()->can('permissions.delete')) {
+                        return '<span class="text-muted">No Access</span>';
+                    }
                     $button = '<button class="btn btn-danger btn-sm hapus-permission" data-id="' . $permission->id . '" name="edit"><i class="ri-delete-bin-6-line"></i></button>';
                     return $button;
                 })
@@ -28,6 +31,9 @@ class PermissionController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('permissions.update')) {
+            abort(403, 'Anda tidak punya akses untuk mengedit permission');
+        }
         $permission = Permission::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
@@ -45,24 +51,21 @@ class PermissionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function show()
-    {
-        //
-    }
-
+     * Show the form for creating a new resour
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('permissions.create')) {
+            abort(403, 'Anda tidak punya akses untuk membuat permission');
+        }
+
         $request->validate([
             'name' => 'required|unique:permissions,name',
         ]);
 
         Permission::create(['name' => $request->name, 'guard_name' => 'web']);
-
         return redirect()->route('permissions.index')->with('success', 'Permission created.');
     }
 

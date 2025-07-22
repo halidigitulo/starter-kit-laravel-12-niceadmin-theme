@@ -1,8 +1,9 @@
 <div class="row my-3">
     <div class="col">
-        <button class="btn btn-primary mb-3" id="btn-add-menu"><i class="ri-add-line"></i> Add Menu</button>
+        @can('menus.create')
+            <button class="btn btn-primary mb-3" id="btn-add-menu"><i class="ri-add-line"></i> Add Menu</button>
+        @endcan
         <div class="table-responsive">
-
             <table class="table table-bordered table-hover table-striped" id="menu-table">
                 <thead>
                     <tr>
@@ -19,8 +20,8 @@
                 {{-- <tbody></tbody> --}}
             </table>
         </div>
-    
-    
+
+
         <!-- Modal -->
         <div class="modal fade" id="modalMenu" tabindex="-1">
             <div class="modal-dialog">
@@ -34,7 +35,8 @@
                             @csrf
                             <input type="hidden" id="menu_id">
                             <input type="text" class="form-control mb-2" id="menu_name" placeholder="Name" required>
-                            <input type="text" class="form-control mb-2" id="menu_url" placeholder="URL (default: #)">
+                            <input type="text" class="form-control mb-2" id="menu_url"
+                                placeholder="URL (default: #)">
                             <input type="text" class="form-control mb-2" id="menu_icon"
                                 placeholder="Icon (default: circle-line)">
                             <select class="mb-2 form-select select2" id="menu_parent_id" name="parent_id">
@@ -43,7 +45,7 @@
                                     <option value="{{ $menu->id }}">{{ $menu->name }}</option>
                                 @endforeach
                             </select>
-    
+
                             <input type="text" class="form-control mb-2" id="menu_permission" name="permission_name"
                                 placeholder="Permission Name">
                         </div>
