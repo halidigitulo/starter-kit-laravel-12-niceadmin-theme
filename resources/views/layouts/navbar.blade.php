@@ -8,9 +8,10 @@
                         <img class="img" style="height: 35px" src="{{ asset('uploads/' . $profile->logo) }}"
                             alt="{{ $profile->nama }}">
                     @else
-                        <span class="logo-sm">
+                        {{-- <span class="logo-sm">
                             {{ $profile->nama }}
-                        </span>
+                        </span> --}}
+                        
                         <span class="logo-lg">
                             {{ $profile->nama }}
                         </span>
