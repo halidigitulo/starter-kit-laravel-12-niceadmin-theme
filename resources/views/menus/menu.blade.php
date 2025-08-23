@@ -23,7 +23,7 @@
 
 
         <!-- Modal -->
-        <div class="modal fade" id="modalMenu" tabindex="-1">
+        <div class="modal fade" id="modalMenu" tabindex="-1" aria-hidden="false">
             <div class="modal-dialog">
                 <form id="formMenu">
                     <div class="modal-content">
@@ -140,7 +140,7 @@
                 $('.modal-title').text('Add Menu');
             });
 
-            $(document).on('click', '.edit-user', function() {
+            $(document).on('click', '.edit-menu', function() {
                 let id = $(this).data('id');
                 $.get(`/menus/${id}`, function(data) {
                     $('#modalMenu').modal('show');
@@ -149,10 +149,9 @@
                     $('#menu_name').val(data.name);
                     $('#menu_url').val(data.url);
                     $('#menu_icon').val(data.icon);
-                    $('#menu_parent_id').val(data.parent_id);
-                    let parentSelect = document.querySelector('#menu_parent_id').tomselect;
-                    parentSelect.setValue(data.parent_id || '');
                     $('#menu_permission').val(data.permission_name);
+                    $('#menu_parent_id').val(data.parent_id).trigger('change');
+
                 });
             });
 
@@ -193,7 +192,7 @@
                 });
             });
 
-            $(document).on('click', '.hapus-user', function() {
+            $(document).on('click', '.hapus-menu', function() {
                 let id = $(this).data('id');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -218,21 +217,15 @@
             });
 
         });
-    </script>
-    <script>
-        $('#modalMenu').on('shown.bs.modal', function() {
-            const selects = ['#menu_parent_id'];
 
-            selects.forEach(function(selector) {
-                new TomSelect(selector, {
-                    sortField: {
-                        field: "text",
-                        direction: "asc"
-                    },
-                    // dropdownParent: $('#modal-personalia'), // Ensure the dropdown remains properly aligned in the modal
-                    closeAfterSelect: true // Optional: close dropdown after selecting an option
-                });
-            });
+        $('#modalMenu').on('hidden.bs.modal', function() {
+            // Arahkan fokus ke tombol pemicu modal
+            $('#btnOpenModal').focus();
+        });
+
+        $('#modalMenu').on('hide.bs.modal', function() {
+            $(this).find(':focus').blur();
         });
     </script>
+   
 @endpush

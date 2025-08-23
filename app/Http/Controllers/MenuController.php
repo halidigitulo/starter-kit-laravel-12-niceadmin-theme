@@ -18,12 +18,12 @@ class MenuController extends Controller
                     if (!auth()->user()->can('menus.update') && !auth()->user()->can('menus.delete')) {
                         return '<span class="text-muted">No Access</span>';
                     }
-                    $editButton = '<button class="btn btn-warning btn-sm edit-user" data-id="' . $user->id . '" name="edit"><i class="ri-pencil-line"></i></button>';
+                    $editButton = '<button class="btn btn-warning btn-sm edit-menu" data-id="' . $user->id . '" name="edit"><i class="ri-pencil-line"></i></button>';
                     $spasi = ' ';
                     if ($user->is_protected) {
                         return $editButton;
                     }
-                    $deleteButton = '<button class="btn btn-danger btn-sm hapus-user" data-id="' . $user->id . '" name="edit"><i class="ri-delete-bin-6-line"></i></button>';
+                    $deleteButton = '<button class="btn btn-danger btn-sm hapus-menu" data-id="' . $user->id . '" name="edit"><i class="ri-delete-bin-6-line"></i></button>';
                     return $editButton . ' ' . $spasi . ' ' . $deleteButton;
                 })
                 ->addColumn('protected', function ($row) {
@@ -54,15 +54,18 @@ class MenuController extends Controller
 
     public function reorder(Request $request)
     {
-        foreach ($request->order as $item) {
+        $orders = $request->input('order', $request->all()); // fallback kalau tidak ada key "order"
+
+        foreach ($orders as $item) {
             Menu::where('id', $item['id'])->update([
                 'sort_order' => $item['sort_order'],
-                'parent_id' => $item['parent_id']
+                'parent_id'  => $item['parent_id'] ?? null
             ]);
         }
 
         return response()->json(['message' => 'Urutan berhasil disimpan']);
     }
+
 
 
     public function store(Request $request)

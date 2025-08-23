@@ -31,63 +31,6 @@
 
     <!-- Modal -->
 
-    {{-- <div class="modal fade" id="modalRole" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <form id="formRole">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add Role</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        @csrf
-                        <input type="hidden" id="role_id">
-                        <input type="text" class="form-control mb-2" id="role_name" placeholder="Role name">
-
-                        <label>Permissions:</label><br>
-                        <table id="permissionTable" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Modul</th>
-                                    <th class="text-center">Create</th>
-                                    <th class="text-center">Read</th>
-                                    <th class="text-center">Update</th>
-                                    <th class="text-center">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($groupedPermissions as $module => $actions)
-                                    <tr>
-                                        <td>{{ ucfirst($module) }}</td>
-                                        @foreach (['create', 'read', 'update', 'delete'] as $action)
-                                            <td class="text-center">
-                                                @if (isset($actions[$action]))
-                                                    <input type="checkbox" name="permissions[]"
-                                                        class="form-check-input permission-checkbox"
-                                                        id="perm_{{ $actions[$action]->id }}"
-                                                        value="{{ $actions[$action]->name }}">
-                                                @else
-                                                    ❌
-                                                @endif
-                                            </td>
-                                        @endforeach
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        @can('roles.create')
-                            <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
-                        @endcan
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
-                                class="ri-close-line"></i>Cancel</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div> --}}
-
     <div class="modal fade" id="modalRole" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <form id="formRole">

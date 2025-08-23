@@ -34,20 +34,31 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <script>
-        // Inisialisasi SortableJS nested
-        document.querySelectorAll('.nested-sortable').forEach(function(el) {
-            new Sortable(el, {
-                group: 'nested',
-                animation: 150,
-                fallbackOnBody: true,
-                swapThreshold: 0.65
+        initSortable();
+        // Inisialisasi sortable untuk elemen dengan class .nested-sortable
+        function initSortable() {
+            document.querySelectorAll('.nested-sortable').forEach(function(el) {
+                new Sortable(el, {
+                    group: {
+                        name: 'nested',
+                        pull: true, // bisa ditarik keluar
+                        put: true // bisa dipindah masuk
+                    },
+                    animation: 150,
+                    fallbackOnBody: true,
+                    swapThreshold: 0.65,
+                    handle: 'i.ri-draggable', // hanya ikon yang bisa drag
+                    onEnd: function() {
+                        updatePreview();
+                    }
+                });
             });
-        });
+        }
 
+        // Panggil pertama kali
         $('#saveOrder').click(function() {
             let order = [];
 
-            // Fungsi rekursif ambil urutan dan parent_id
             function parseList($list, parentId = null) {
                 $list.children('li').each(function(index) {
                     let id = $(this).data('id');
@@ -63,21 +74,28 @@
                     }
                 });
             }
-
             parseList($('#menuList'));
+            // Alternatif sederhana tanpa rekursif, hanya untuk 2 level
+            $('#menu-list li').each(function(index) {
+                order.push({
+                    id: $(this).data('id'),
+                    sort_order: index + 1,
+                    parent_id: $(this).data('parent') || null
+                });
+            });
 
             $.ajax({
                 url: "{{ route('menus.reorder') }}",
                 type: 'POST',
                 data: {
-                    _token: '{{ csrf_token() }}',
-                    order: order
+                    order: order,
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(res) {
-                    Swal.fire('Berhasil', res.message, 'success');
+                success: function(response) {
+                    Swal.fire('Berhasil', response.message, 'success');
                 },
                 error: function() {
-                    Swal.fire('Gagal', 'Gagal menyimpan urutan', 'error');
+                    Swal.fire('Error', 'Gagal menyimpan urutan', 'error');
                 }
             });
         });
