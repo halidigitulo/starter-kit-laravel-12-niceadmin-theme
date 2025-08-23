@@ -8,13 +8,14 @@
                     <h4 class="card-title"><i class="ri-settings-line"></i> @yield('title')</h4>
                 </div>
                 <div class="card-body">
-                    @can('roles.create')
-                        <button class="btn btn-primary mb-3" id="btn-add-role">+ Add Role</button>
-                    @endcan
+                    {{-- @can('roles.create') --}}
+                    <button class="btn btn-primary mb-3" id="btn-add-role">+ Add Role</button>
+                    {{-- @endcan --}}
                     <div class="table-reponsive">
                         <table class="table table-bordered table-hover table-striped table-sm" id="role-table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Permissions</th>
                                     <th>Action</th>
@@ -75,9 +76,9 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        @can('roles.create')
-                            <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
-                        @endcan
+                        {{-- @can('roles.create') --}}
+                        <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
+                        {{-- @endcan --}}
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
                                 class="ri-close-line"></i>Cancel</button>
                     </div>
@@ -93,49 +94,85 @@
             loadRoles();
 
             function loadRoles() {
-                $.get("{{ route('roles.index') }}", function(res) {
-                    if ($.fn.DataTable.isDataTable('#role-table')) {
-                        $('#role-table').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#role-table')) {
+                    $('#role-table').DataTable().clear().destroy(); // destroy dulu
+                }
+
+                $('#role-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ route('roles.index') }}",
+                        type: 'GET'
+                    },
+                    columns: [{
+                            orderable: false,
+                            render: function(data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        {
+                            data: 'name',
+                            name: 'name'
+                        },
+                        {
+                            data: 'permissions',
+                            name: 'permissions',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
+                    order: [
+                        [1, 'asc']
+                    ],
+                    responsive: true,
+                    autoWidth: false,
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ],
+                    pageLength: 10,
+                    language: {
+                        lengthMenu: "Show _MENU_", // supaya tampil dropdown lengthMenu
+                        search: "Search:",
+                        paginate: {
+                            previous: "Prev",
+                            next: "Next"
+                        }
                     }
-
-                    $('#role-table tbody').html('');
-
-                    $.each(res.roles, function(i, r) {
-                        $('#role-table tbody').append(`
-                <tr>
-                    <td>${r.name}</td>
-                    <td>
-                        ${r.permissions.map(p => {
-                            let color = 'secondary';
-                            if (p.name.includes('.create')) color = 'success';
-                            else if (p.name.includes('.read')) color = 'info';
-                            else if (p.name.includes('.update')) color = 'warning';
-                            else if (p.name.includes('.delete')) color = 'danger';
-                            return `<span class="badge bg-${color} me-1">${p.name}</span>`;
-                        }).join('')}
-                    </td>
-                    <td>
-                        @can('roles.create')
-                        <button class="btn btn-sm btn-warning btn-edit" data-id="${r.id}"><i class="ri-pencil-line"></i></button>
-                        @endcan
-                            
-                            @can('roles.delete')
-                        <button class="btn btn-sm btn-danger btn-delete" data-id="${r.id}"><i class="ri-delete-bin-6-line"></i></button>
-                        @endcan
-                    </td>
-                </tr>
-            `);
-                    });
-
-                    $('#role-table').DataTable({
-                        responsive: true,
-                        paging: true,
-                        searching: true,
-                        ordering: false,
-                        info: true
-                    });
                 });
             }
+
+            let currentPermissions = [];
+
+            let permissionTable = $('#permissionTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: false,
+                info: false,
+                pageLength: 5,
+                lengthMenu: [5, 10, 20, 50],
+            });
+
+            // setiap kali table di-render ulang
+            permissionTable.on('draw.dt', function() {
+                if (currentPermissions.length > 0) {
+                    $('.permission-checkbox').each(function() {
+                        let val = $(this).val();
+                        if (currentPermissions.includes(val)) {
+                            $(this).prop('checked', true);
+                        } else {
+                            $(this).prop('checked', false);
+                        }
+                    });
+                }
+            });
 
             $('#btn-add-role').click(() => {
                 $('#modalRole').modal('show');
@@ -151,21 +188,72 @@
                     $('#modalRole').modal('show');
                     $('#role_id').val(data.id);
                     $('#role_name').val(data.name);
-                    $('.permission-checkbox').prop('checked', false);
-                    data.permissions.forEach(p => {
-                        $(`.permission-checkbox[value="${p}"]`).prop('checked', true);
-                    });
+
+                    currentPermissions = data.permissions; // simpan permission aktif
+
+                    $('.modal-title').text('Edit Role');
+
+                    // trigger redraw supaya centang langsung sesuai data
+                    $('#permissionTable').DataTable().draw();
+                }).fail(() => {
+                    Swal.fire('Error', 'Gagal memuat data role.', 'error');
                 });
             });
+
+            // $('#formRole').submit(function(e) {
+            //     e.preventDefault();
+            //     let id = $('#role_id').val();
+            //     let url = id ? `/roles/${id}` : `{{ route('roles.store') }}`;
+            //     let method = id ? 'PUT' : 'POST';
+            //     let permissions = $('.permission-checkbox:checked').map(function() {
+            //         return this.value;
+            //     }).get();
+
+            //     $.ajax({
+            //         url,
+            //         type: 'POST',
+            //         data: {
+            //             _token: "{{ csrf_token() }}",
+            //             _method: method,
+            //             name: $('#role_name').val(),
+            //             permissions
+            //         },
+            //         success: function(res) {
+            //             $('#modalRole').modal('hide');
+            //             Swal.fire('Success', res.message, 'success');
+            //             loadRoles();
+            //         }
+            //     });
+            // });
 
             $('#formRole').submit(function(e) {
                 e.preventDefault();
                 let id = $('#role_id').val();
                 let url = id ? `/roles/${id}` : `{{ route('roles.store') }}`;
                 let method = id ? 'PUT' : 'POST';
-                let permissions = $('.permission-checkbox:checked').map(function() {
-                    return this.value;
+
+                // ambil semua checkbox termasuk yang tidak terlihat (pake DataTables API)
+                let allPermissions = $('#permissionTable').DataTable().$('input.permission-checkbox').map(
+                    function() {
+                        return $(this).val();
+                    }).get();
+
+                // ambil semua checkbox yang tercentang (dari seluruh halaman, bukan hanya DOM aktif)
+                let selectedPermissions = $('#permissionTable').DataTable().$(
+                    'input.permission-checkbox:checked').map(function() {
+                    return $(this).val();
                 }).get();
+
+                // cek apakah ada perubahan dibanding currentPermissions
+                let before = currentPermissions.sort().join(',');
+                let after = selectedPermissions.sort().join(',');
+
+                if (id && before === after) {
+                    // tidak ada perubahan, tidak perlu request AJAX
+                    $('#modalRole').modal('hide');
+                    Swal.fire('Info', 'Tidak ada perubahan yang disimpan.', 'info');
+                    return;
+                }
 
                 $.ajax({
                     url,
@@ -174,7 +262,7 @@
                         _token: "{{ csrf_token() }}",
                         _method: method,
                         name: $('#role_name').val(),
-                        permissions
+                        permissions: selectedPermissions
                     },
                     success: function(res) {
                         $('#modalRole').modal('hide');
@@ -183,6 +271,73 @@
                     }
                 });
             });
+
+
+            // function loadRoles() {
+            //     $.get("{{ route('roles.index') }}", function(res) {
+            //         if ($.fn.DataTable.isDataTable('#role-table')) {
+            //             $('#role-table').DataTable().destroy();
+            //         }
+
+            //         $('#role-table tbody').html('');
+
+            //         $.each(res.roles, function(i, r) {
+            //             $('#role-table tbody').append(`
+        //     <tr>
+        //         <td>${r.name}</td>
+        //         <td>
+        //             ${r.permissions.map(p => {
+        //                 let color = 'secondary';
+        //                 if (p.name.includes('.create')) color = 'success';
+        //                 else if (p.name.includes('.read')) color = 'info';
+        //                 else if (p.name.includes('.update')) color = 'warning';
+        //                 else if (p.name.includes('.delete')) color = 'danger';
+        //                 return `<span class="badge bg-${color} me-1">${p.name}</span>`;
+        //             }).join('')}
+        //         </td>
+        //         <td>
+        //             @can('roles.create')
+        //             <button class="btn btn-sm btn-warning btn-edit" data-id="${r.id}"><i class="ri-pencil-line"></i></button>
+        //             @endcan
+
+        //                 @can('roles.delete')
+        //             <button class="btn btn-sm btn-danger btn-delete" data-id="${r.id}"><i class="ri-delete-bin-6-line"></i></button>
+        //             @endcan
+        //         </td>
+        //     </tr>
+        // `);
+            //         });
+
+            //         $('#role-table').DataTable({
+            //             responsive: true,
+            //             paging: true,
+            //             searching: true,
+            //             ordering: false,
+            //             info: true
+            //         });
+            //     });
+            // }
+
+
+
+            // $(document).on('click', '.btn-edit', function() {
+            //     let id = $(this).data('id');
+            //     $.get(`/roles/${id}`, function(data) {
+            //         $('#modalRole').modal('show');
+            //         $('#role_id').val(data.id);
+            //         $('#role_name').val(data.name);
+            //         $('.permission-checkbox').prop('checked', false);
+            //         data.permissions.forEach(p => {
+            //             $(`.permission-checkbox[value="${p}"]`).prop('checked', true);
+            //         });
+            //     });
+            // });
+
+
+
+
+
+
 
             $(document).on('click', '.btn-delete', function() {
                 let id = $(this).data('id');
@@ -205,15 +360,6 @@
                         });
                     }
                 });
-            });
-
-            $('#permissionTable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: false,
-                info: false,
-                pageLength: 50,
-                lengthMenu: [5, 10, 20, 50, ]
             });
         });
     </script>

@@ -30,11 +30,16 @@ Route::middleware(['auth:admin'])->group(function () {
     });
 
     Route::group(['prefix' => 'roles/'], function () {
-        Route::get('',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.read');
-        Route::post('',[RoleController::class,'store'])->name('roles.store')->middleware('permission:roles.create');
-        Route::get('{role}',[RoleController::class,'show'])->name('roles.show')->middleware('permission:roles.read');
-        Route::put('{role}',[RoleController::class,'update'])->name('roles.update')->middleware('permission:roles.update');
-        Route::delete('{role}',[RoleController::class,'destroy'])->name('roles.destroy')->middleware('permission:roles.delete');
+        // Route::get('',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.read');
+        // Route::post('',[RoleController::class,'store'])->name('roles.store')->middleware('permission:roles.create');
+        // Route::get('{role}',[RoleController::class,'show'])->name('roles.show')->middleware('permission:roles.read');
+        // Route::put('{role}',[RoleController::class,'update'])->name('roles.update')->middleware('permission:roles.update');
+        // Route::delete('{role}',[RoleController::class,'destroy'])->name('roles.destroy')->middleware('permission:roles.delete');
+        Route::get('',[RoleController::class,'index'])->name('roles.index');
+        Route::post('',[RoleController::class,'store'])->name('roles.store');
+        Route::get('{role}',[RoleController::class,'show'])->name('roles.show');
+        Route::put('{role}',[RoleController::class,'update'])->name('roles.update');
+        Route::delete('{role}',[RoleController::class,'destroy'])->name('roles.destroy');
     });
 
     Route::group(['prefix' => 'permission/'], function () {
