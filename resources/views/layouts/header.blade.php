@@ -19,5 +19,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="css/style.css">
+    @vite('resources/sass/app.js')
     @stack('style')
 </head>

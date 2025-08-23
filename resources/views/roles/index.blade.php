@@ -30,7 +30,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="modalRole" tabindex="-1">
+
+    {{-- <div class="modal fade" id="modalRole" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <form id="formRole">
                 <div class="modal-content">
@@ -76,21 +77,151 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        {{-- @can('roles.create') --}}
-                        <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
-                        {{-- @endcan --}}
+                        @can('roles.create')
+                            <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
+                        @endcan
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
                                 class="ri-close-line"></i>Cancel</button>
                     </div>
                 </div>
             </form>
         </div>
+    </div> --}}
+
+    <div class="modal fade" id="modalRole" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <form id="formRole">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Role</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" id="role_id">
+                        <input type="text" class="form-control mb-2" id="role_name" placeholder="Role name">
+
+                        <label>Permissions:</label><br>
+                        <table id="permissionTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="row">
+                                            <div class="col d-flex justify-content-between">
+                                                <div>
+                                                    Modul
+                                                </div>
+                                                <div>
+                                                    <!-- ✅ Centang semua -->
+                                                    <input type="checkbox" id="checkAll" class="select-all">
+                                                    <label for="checkAll" class="form-check-label">Check All</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th class="text-center">Create</th>
+                                    <th class="text-center">Read</th>
+                                    <th class="text-center">Update</th>
+                                    <th class="text-center">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($groupedPermissions as $module => $actions)
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col d-flex justify-content-between">
+                                                    <div>{{ ucfirst($module) }} </div>
+                                                    <div>
+                                                        <!-- ✅ Centang per modul -->
+                                                        <input type="checkbox" class="check-module text-end select-all"
+                                                            data-module="{{ $module }}"
+                                                            id="check_{{ $module }}">
+                                                        <label for="check_{{ $module }}"
+                                                            class="form-check-label">Check All</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        @foreach (['create', 'read', 'update', 'delete'] as $action)
+                                            <td class="text-center">
+                                                @if (isset($actions[$action]))
+                                                    <input type="checkbox" name="permissions[]"
+                                                        class="form-check-input permission-checkbox permission-{{ $module }}"
+                                                        id="perm_{{ $actions[$action]->id }}"
+                                                        value="{{ $actions[$action]->name }}">
+                                                @else
+                                                    ❌
+                                                @endif
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        @can('roles.create')
+                            <button type="submit" class="btn btn-success"><i class="ri-save-line"></i> Save</button>
+                        @endcan
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="ri-close-line"></i>Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+
 @endsection
 
 @push('scripts')
     <script>
         $(function() {
+            $(document).ready(function() {
+                // ✅ Centang semua modul + permissions
+                $("#checkAll").on("change", function() {
+                    let status = $(this).is(":checked");
+                    $(".permission-checkbox, .check-module").prop("checked", status);
+                });
+
+                // ✅ Centang per modul
+                $(".check-module").on("change", function() {
+                    let module = $(this).data("module");
+                    let status = $(this).is(":checked");
+                    $(".permission-" + module).prop("checked", status);
+
+                    // update global check all
+                    updateGlobalCheckAll();
+                });
+
+                // ✅ Sinkronisasi balik: kalau ada perubahan di permission
+                $(".permission-checkbox").on("change", function() {
+                    let classes = $(this).attr("class").split(" ");
+                    let moduleClass = classes.find(c => c.startsWith("permission-"));
+                    let module = moduleClass.replace("permission-", "");
+
+                    let total = $(".permission-" + module).length;
+                    let checked = $(".permission-" + module + ":checked").length;
+
+                    // 🔄 update check-module sesuai kondisi
+                    $(".check-module[data-module='" + module + "']").prop("checked", total ===
+                        checked);
+
+                    // update global check all
+                    updateGlobalCheckAll();
+                });
+
+                // ✅ Fungsi bantu: update global check all
+                function updateGlobalCheckAll() {
+                    let allCheckbox = $(".permission-checkbox").length;
+                    let allChecked = $(".permission-checkbox:checked").length;
+                    $("#checkAll").prop("checked", allCheckbox > 0 && allCheckbox === allChecked);
+                    $(".check_{{ $module }}").prop("checked", allCheckbox > 0 && allCheckbox === allChecked);
+                }
+            });
+
+
             loadRoles();
 
             function loadRoles() {
@@ -151,7 +282,7 @@
 
             let currentPermissions = [];
 
-            let permissionTable = $('#permissionTable').DataTable({
+            const permissionTable = $('#permissionTable').DataTable({
                 paging: true,
                 searching: true,
                 ordering: false,
@@ -160,96 +291,142 @@
                 lengthMenu: [5, 10, 20, 50],
             });
 
-            // setiap kali table di-render ulang
+            // ----- Helpers sinkronisasi -----
+            function syncModuleToggleState(module) {
+                const total = permissionTable.$(`.permission-${module}`, {
+                    page: 'all'
+                }).length;
+                const checked = permissionTable.$(`.permission-${module}:checked`, {
+                    page: 'all'
+                }).length;
+                // toggle per modul yang terlihat (di halaman sekarang) diset sesuai agregat semua halaman
+                $(`#permissionTable .check-module[data-module="${module}"]`).prop('checked', total > 0 && total ===
+                    checked);
+            }
+
+            function syncGlobalToggleState() {
+                const totalAll = permissionTable.$('.permission-checkbox', {
+                    page: 'all'
+                }).length;
+                const checkedAll = permissionTable.$('.permission-checkbox:checked', {
+                    page: 'all'
+                }).length;
+                $('#checkAll').prop('checked', totalAll > 0 && totalAll === checkedAll);
+            }
+
+            // ----- Apply currentPermissions setiap draw (untuk centang sesuai DB) -----
             permissionTable.on('draw.dt', function() {
                 if (currentPermissions.length > 0) {
-                    $('.permission-checkbox').each(function() {
-                        let val = $(this).val();
-                        if (currentPermissions.includes(val)) {
-                            $(this).prop('checked', true);
-                        } else {
-                            $(this).prop('checked', false);
-                        }
+                    // hanya perlu set yang tampil (halaman current); DataTables menyimpan state untuk halaman lain via event berikutnya
+                    $('#permissionTable input.permission-checkbox').each(function() {
+                        $(this).prop('checked', currentPermissions.includes(this.value));
                     });
                 }
+                // update switch per modul yang terlihat & switch global
+                $('#permissionTable .check-module').each(function() {
+                    syncModuleToggleState($(this).data('module'));
+                });
+                syncGlobalToggleState();
             });
 
-            $('#btn-add-role').click(() => {
+            // ===== Delegated events (bekerja di semua halaman) =====
+
+            // Global Check All
+            $('#permissionTable').on('change', '#checkAll', function() {
+                const checked = this.checked;
+                // centang semua permission di SEMUA halaman
+                permissionTable.$('.permission-checkbox', {
+                    page: 'all'
+                }).prop('checked', checked);
+                // set semua toggle modul yang sedang terlihat agar konsisten
+                $('#permissionTable .check-module').prop('checked', checked);
+            });
+
+            // Check All per modul
+            $('#permissionTable').on('change', '.check-module', function() {
+                const module = $(this).data('module');
+                const checked = this.checked;
+                // centang semua permission modul tsb di SEMUA halaman
+                permissionTable.$(`.permission-${module}`, {
+                    page: 'all'
+                }).prop('checked', checked);
+                // set global toggle
+                syncGlobalToggleState();
+            });
+
+            // Per permission
+            $('#permissionTable').on('change', '.permission-checkbox', function() {
+                const moduleClass = this.className.split(' ').find(c => c.startsWith('permission-'));
+                if (!moduleClass) return;
+                const module = moduleClass.replace('permission-', '');
+                syncModuleToggleState(module);
+                syncGlobalToggleState();
+            });
+
+            // ====== Open modal Add ======
+            $('#btn-add-role').on('click', function() {
                 $('#modalRole').modal('show');
                 $('#formRole')[0].reset();
-                $('.permission-checkbox').prop('checked', false);
+                currentPermissions = []; // reset state DB
+                // kosongkan semua centang di semua halaman
+                permissionTable.$('.permission-checkbox', {
+                    page: 'all'
+                }).prop('checked', false);
+                // reset toggle
+                $('#checkAll').prop('checked', false);
+                $('#permissionTable .check-module').prop('checked', false);
                 $('#role_id').val('');
                 $('.modal-title').text('Add Role');
             });
 
+            // ====== Open modal Edit ======
             $(document).on('click', '.btn-edit', function() {
-                let id = $(this).data('id');
+                const id = $(this).data('id');
                 $.get(`/roles/${id}`, function(data) {
                     $('#modalRole').modal('show');
                     $('#role_id').val(data.id);
                     $('#role_name').val(data.name);
 
-                    currentPermissions = data.permissions; // simpan permission aktif
+                    currentPermissions = data.permissions || [];
+
+                    // set semua permission sesuai DB di SEMUA halaman
+                    permissionTable.$('.permission-checkbox', {
+                        page: 'all'
+                    }).each(function() {
+                        $(this).prop('checked', currentPermissions.includes(this.value));
+                    });
+
+                    // sinkronkan toggle setelah set
+                    $('#permissionTable .check-module').each(function() {
+                        syncModuleToggleState($(this).data('module'));
+                    });
+                    syncGlobalToggleState();
 
                     $('.modal-title').text('Edit Role');
-
-                    // trigger redraw supaya centang langsung sesuai data
-                    $('#permissionTable').DataTable().draw();
                 }).fail(() => {
                     Swal.fire('Error', 'Gagal memuat data role.', 'error');
                 });
             });
 
-            // $('#formRole').submit(function(e) {
-            //     e.preventDefault();
-            //     let id = $('#role_id').val();
-            //     let url = id ? `/roles/${id}` : `{{ route('roles.store') }}`;
-            //     let method = id ? 'PUT' : 'POST';
-            //     let permissions = $('.permission-checkbox:checked').map(function() {
-            //         return this.value;
-            //     }).get();
-
-            //     $.ajax({
-            //         url,
-            //         type: 'POST',
-            //         data: {
-            //             _token: "{{ csrf_token() }}",
-            //             _method: method,
-            //             name: $('#role_name').val(),
-            //             permissions
-            //         },
-            //         success: function(res) {
-            //             $('#modalRole').modal('hide');
-            //             Swal.fire('Success', res.message, 'success');
-            //             loadRoles();
-            //         }
-            //     });
-            // });
-
-            $('#formRole').submit(function(e) {
+            // ===== Submit =====
+            $('#formRole').on('submit', function(e) {
                 e.preventDefault();
-                let id = $('#role_id').val();
-                let url = id ? `/roles/${id}` : `{{ route('roles.store') }}`;
-                let method = id ? 'PUT' : 'POST';
+                const id = $('#role_id').val();
+                const url = id ? `/roles/${id}` : `{{ route('roles.store') }}`;
+                const method = id ? 'PUT' : 'POST';
 
-                // ambil semua checkbox termasuk yang tidak terlihat (pake DataTables API)
-                let allPermissions = $('#permissionTable').DataTable().$('input.permission-checkbox').map(
-                    function() {
+                // ambil SEMUA checkbox tercentang dari SEMUA halaman
+                const selectedPermissions = permissionTable.$('input.permission-checkbox:checked', {
+                        page: 'all'
+                    })
+                    .map(function() {
                         return $(this).val();
                     }).get();
 
-                // ambil semua checkbox yang tercentang (dari seluruh halaman, bukan hanya DOM aktif)
-                let selectedPermissions = $('#permissionTable').DataTable().$(
-                    'input.permission-checkbox:checked').map(function() {
-                    return $(this).val();
-                }).get();
-
-                // cek apakah ada perubahan dibanding currentPermissions
-                let before = currentPermissions.sort().join(',');
-                let after = selectedPermissions.sort().join(',');
-
+                // kalau edit & tidak ada perubahan, jangan kirim
+                const before = (currentPermissions || []).slice().sort().join(',');
+                const after = selectedPermissions.slice().sort().join(',');
                 if (id && before === after) {
-                    // tidak ada perubahan, tidak perlu request AJAX
                     $('#modalRole').modal('hide');
                     Swal.fire('Info', 'Tidak ada perubahan yang disimpan.', 'info');
                     return;
@@ -267,76 +444,10 @@
                     success: function(res) {
                         $('#modalRole').modal('hide');
                         Swal.fire('Success', res.message, 'success');
-                        loadRoles();
+                        loadRoles(); // milikmu untuk table daftar role
                     }
                 });
             });
-
-
-            // function loadRoles() {
-            //     $.get("{{ route('roles.index') }}", function(res) {
-            //         if ($.fn.DataTable.isDataTable('#role-table')) {
-            //             $('#role-table').DataTable().destroy();
-            //         }
-
-            //         $('#role-table tbody').html('');
-
-            //         $.each(res.roles, function(i, r) {
-            //             $('#role-table tbody').append(`
-        //     <tr>
-        //         <td>${r.name}</td>
-        //         <td>
-        //             ${r.permissions.map(p => {
-        //                 let color = 'secondary';
-        //                 if (p.name.includes('.create')) color = 'success';
-        //                 else if (p.name.includes('.read')) color = 'info';
-        //                 else if (p.name.includes('.update')) color = 'warning';
-        //                 else if (p.name.includes('.delete')) color = 'danger';
-        //                 return `<span class="badge bg-${color} me-1">${p.name}</span>`;
-        //             }).join('')}
-        //         </td>
-        //         <td>
-        //             @can('roles.create')
-        //             <button class="btn btn-sm btn-warning btn-edit" data-id="${r.id}"><i class="ri-pencil-line"></i></button>
-        //             @endcan
-
-        //                 @can('roles.delete')
-        //             <button class="btn btn-sm btn-danger btn-delete" data-id="${r.id}"><i class="ri-delete-bin-6-line"></i></button>
-        //             @endcan
-        //         </td>
-        //     </tr>
-        // `);
-            //         });
-
-            //         $('#role-table').DataTable({
-            //             responsive: true,
-            //             paging: true,
-            //             searching: true,
-            //             ordering: false,
-            //             info: true
-            //         });
-            //     });
-            // }
-
-
-
-            // $(document).on('click', '.btn-edit', function() {
-            //     let id = $(this).data('id');
-            //     $.get(`/roles/${id}`, function(data) {
-            //         $('#modalRole').modal('show');
-            //         $('#role_id').val(data.id);
-            //         $('#role_name').val(data.name);
-            //         $('.permission-checkbox').prop('checked', false);
-            //         data.permissions.forEach(p => {
-            //             $(`.permission-checkbox[value="${p}"]`).prop('checked', true);
-            //         });
-            //     });
-            // });
-
-
-
-
-
 
 
             $(document).on('click', '.btn-delete', function() {
@@ -363,4 +474,5 @@
             });
         });
     </script>
+    
 @endpush
