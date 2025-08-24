@@ -14,16 +14,16 @@ class MenuController extends Controller
             $data = Menu::with('parent')->select('*')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('aksi', function ($user) {
+                ->addColumn('aksi', function ($menu) {
                     if (!auth()->user()->can('menus.update') && !auth()->user()->can('menus.delete')) {
                         return '<span class="text-muted">No Access</span>';
                     }
-                    $editButton = '<button class="btn btn-warning btn-sm edit-menu" data-id="' . $user->id . '" name="edit"><i class="ri-pencil-line"></i></button>';
+                    $editButton = '<button class="btn btn-warning btn-sm edit-menu" data-id="' . $menu->id . '" name="edit"><i class="ri-pencil-line"></i></button>';
                     $spasi = ' ';
-                    if ($user->is_protected) {
+                    if ($menu->is_protected) {
                         return $editButton;
                     }
-                    $deleteButton = '<button class="btn btn-danger btn-sm hapus-menu" data-id="' . $user->id . '" name="edit"><i class="ri-delete-bin-6-line"></i></button>';
+                    $deleteButton = '<button class="btn btn-danger btn-sm hapus-menu" data-id="' . $menu->id . '" name="edit"><i class="ri-delete-bin-6-line"></i></button>';
                     return $editButton . ' ' . $spasi . ' ' . $deleteButton;
                 })
                 ->addColumn('protected', function ($row) {
@@ -65,8 +65,6 @@ class MenuController extends Controller
 
         return response()->json(['message' => 'Urutan berhasil disimpan']);
     }
-
-
 
     public function store(Request $request)
     {
