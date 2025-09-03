@@ -22,6 +22,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             font-family: 'Poppins', sans-serif;
         }
 
@@ -64,6 +65,18 @@
         .form-control:focus {
             border-color: #8b5cf6;
             box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .craft {
+            text-align: center;
+            margin-top: 25px;
+            color: #112233;
+            font-size: 0.9rem;
+        }
+
+        .craft a {
+            color: #7c3aed;
+            text-decoration: none;
         }
 
         /* Purple Neon Button */
@@ -151,8 +164,8 @@
     <div class="login-card">
         <div class="text-center">
             <a href="/" class="auth-logo mb-3">
-                @if ($profile->logo_1 ?? '')
-                    <img src="{{ asset('uploads/' . $profile->logo_1) }}" alt="{{ $profile->nama }}"
+                @if ($profile->logo ?? '')
+                    <img src="{{ asset('uploads/' . $profile->logo) }}" alt="{{ $profile->nama }}"
                         style="max-height: 80px; ">
                 @else
                     <h3 class="text-muted">{{ $profile->nama ?? 'App Name' }}</h3>
@@ -160,26 +173,32 @@
             </a>
         </div>
 
-        <h4>Sign In</h4>
+        <h4 class="mt-3 text-muted text-uppercase">🔐 Sign In</h4>
 
         <form action="{{ route('login') }}" method="post" id="login-form">
             @csrf
             <div class="mb-3">
-                <input type="text" name="username" class="form-control" placeholder="Username" autocomplete="off" required>
+                <input type="text" name="username" class="form-control" placeholder="✉️ Username" autocomplete="off"
+                    required>
             </div>
             <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" autocomplete="off" required>
+                <input type="password" name="password" class="form-control" placeholder="🔑 Password" autocomplete="off"
+                    required>
             </div>
 
-            <div class="mb-3 form-check form-switch">
+            {{-- <div class="mb-3 form-check form-switch">
                 <input type="checkbox" class="form-check-input" id="remember">
                 <label class="form-check-label" for="remember">Remember me</label>
-            </div>
+            </div> --}}
 
-            <button type="submit" class="btn btn-purple">Login</button>
+            <button type="submit" class="btn btn-purple">🔓 Login</button>
         </form>
 
         {{-- <p class="text-center text-muted mt-3">Kembali ke <a href="/">Homepage</a></p> --}}
+        <div class="craft">
+            💻 Crafted by <a href="https://bucumedia.com" target="_blank"> Mr.
+                Nobody</a> 
+        </div>
     </div>
     <script src="{{ asset('') }}libs/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

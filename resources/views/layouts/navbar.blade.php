@@ -182,5 +182,9 @@
                 }
             });
         });
+
+        document.getElementById('refresh-btn').addEventListener('click', function() {
+            location.reload(); // Reloads the current page
+        });
     </script>
 @endpush
