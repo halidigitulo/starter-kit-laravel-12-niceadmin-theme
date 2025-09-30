@@ -86,6 +86,27 @@
         });
     }
 
+    $(document).ready(function() {
+        $('#fullscreen-btn').on('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                $(this).html('<i class="bi bi-fullscreen-exit"></i>');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    $(this).html('<i class="bi bi-arrows-fullscreen"></i>');
+                }
+            }
+        });
+
+        // Update button text and icon on exiting fullscreen mode
+        $(document).on('fullscreenchange', function() {
+            if (!document.fullscreenElement) {
+                $('#fullscreen-btn').html('<i class="bi bi-arrows-fullscreen"></i> ');
+            }
+        });
+    });
+
     // Detect user activity (mouse movement, keypress, scroll, etc.)
     window.onload = resetTimer;
     window.onmousemove = resetTimer;
