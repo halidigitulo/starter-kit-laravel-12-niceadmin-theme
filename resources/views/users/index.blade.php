@@ -1,109 +1,110 @@
 @extends('layouts.app')
 @section('title', 'User Management')
 @section('content')
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title"><i class="ri-settings-line"></i> @yield('title')</h4>
-                </div>
-                <div class="card-body">
-                    @can('users.create')
+    <section class="section">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="height: 60px">
+                        <h4 class="card-title"><i class="ri-user-line"></i> @yield('title')</h4>
+                        @can('users.create')
+                            <div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="addUserButton"
+                                        data-bs-target="#userModal"><i class="bi bi-plus"></i> <span class="btn-text">Create
+                                            User
+                                        </span></button>
+                                </div>
+                            </div>
+                        @endcan
+                    </div>
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col">
-                                    <a href="" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
-                                        data-bs-target="#userModal" id="addUserButton"><i class="ri-add-line"></i> Add User</a>
+                            <div class="col table-responsive">
+                                <table id="table_user" class="table table-hover table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Avatar</th>
+                                            <th>Nama</th>
+                                            <th>Username</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
-                    @endcan
-                    <div class="row">
-                        <div class="col table-responsive">
-                            <table id="table_user" class="table table-hover table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Avatar</th>
-                                        <th>Nama</th>
-                                        <th>Username</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
 
-                    {{-- Modal  --}}
-                    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                        {{-- Modal  --}}
+                        <div class="modal fade" id="userModal" tabindex="-1" role="dialog"
+                            aria-labelledby="userModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form id="userForm" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            <input type="hidden" id="user_id">
+                                            <div class="form-group">
+                                                <label for="name">Nama</label>
+                                                <input type="text" class="form-control" id="name" name="name"
+                                                    autocomplete="off" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="username">Username</label>
+                                                <input type="text" class="form-control" id="username" name="username"
+                                                    autocomplete="off" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password">Password</label>
+                                                <input type="password" class="form-control" id="password" name="password"
+                                                    autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="role">Role</label>
+                                                <select name="role_id" id="user_role_id" class="form-control select2">
+                                                    <option value="">-- Pilih Role --</option>
+                                                    @foreach ($role as $role)
+                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <p class="text-muted">Foto</p>
+                                                <input type="file" class="form-control" id="avatar" name="avatar"
+                                                    onchange="previewFoto(event)">
+                                                <img id="preview-foto" alt="Preview" class="rounded img-fluid mt-2"
+                                                    style="max-width: 200px;">
+                                            </div>
+                                            <div class="form-group mt-3">
+                                                <label for="is_active" class="form-check-label">Aktif?</label>
+                                                <input type="checkbox" id="is_active" name="is_active"
+                                                    class="form-check-input">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light waves-effect"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" id="saveuser">Save</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                <form id="userForm" enctype="multipart/form-data">
-                                    <div class="modal-body">
-                                        <input type="hidden" id="user_id">
-                                        <div class="form-group">
-                                            <label for="name">Nama</label>
-                                            <input type="text" class="form-control" id="name" name="name" autocomplete="off"
-                                                required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="username">Username</label>
-                                            <input type="text" class="form-control" id="username" name="username" autocomplete="off" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="password">Password</label>
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                autocomplete="off">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="role">Role</label>
-                                            <select name="role_id" id="user_role_id" class="form-control select2">
-                                                <option value="">-- Pilih Role --</option>
-                                                @foreach ($role as $role)
-                                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <p class="text-muted">Foto</p>
-                                            <input type="file" class="form-control" id="avatar" name="avatar"
-                                                onchange="previewFoto(event)">
-                                            <img id="preview-foto" alt="Preview" class="rounded img-fluid mt-2"
-                                                style="max-width: 200px;">
-                                        </div>
-                                        <div class="form-group mt-3">
-                                            <label for="is_active" class="form-check-label">Aktif?</label>
-                                            <input type="checkbox" id="is_active" name="is_active" class="form-check-input">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light waves-effect"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary" id="saveuser">Save</button>
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </section>
 @endsection
-@push('style')
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
-@endpush
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
         function previewFoto(event) {
             const reader = new FileReader();

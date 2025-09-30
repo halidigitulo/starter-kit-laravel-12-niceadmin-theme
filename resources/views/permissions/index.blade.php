@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center mb-2" style="height: 60px">
                     <h4 class="card-title"><i class="ri-settings-line"></i> @yield('title')</h4>
                 </div>
                 <div class="card-body">

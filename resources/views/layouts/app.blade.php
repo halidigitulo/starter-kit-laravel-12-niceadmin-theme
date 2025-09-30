@@ -1,24 +1,16 @@
-
 @include('layouts.header')
 
-<body data-topbar="dark" class="">
+<body>
     <!-- Begin page -->
-    <div id="layout-wrapper">
+    <header id="header" class="header fixed-top d-flex align-items-center">
         @include('layouts.navbar')
-        @include('layouts.sidebar')
 
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    @yield('content')
-                </div> <!-- container-fluid -->
-            </div>
-            <!-- End Page-content -->
-            @include('layouts.footer')
-        </div>
-        <!-- end main content-->
-    </div>
-    <!-- END layout-wrapper -->
-    {{-- @include('layout.right-sidebar') --}}
 
+    </header><!-- End Header -->
+    @include('layouts.sidebar')
+    <main id="main" class="main">
+        @yield('content')
+    </main><!-- End #main -->
+
+    @include('layouts.footer')
     @include('layouts.script')

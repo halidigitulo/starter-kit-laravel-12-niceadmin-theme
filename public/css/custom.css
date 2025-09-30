@@ -1,0 +1,242 @@
+@import url("https://rsms.me/inter/inter.css");
+:root {
+    --tblr-font-sans-serif: "Inter Var", -apple-system, BlinkMacSystemFont,
+        San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+}
+
+html {
+    font-size: 85%;
+}
+
+html {
+    overflow-x: hidden;
+    scroll-padding-top: 7rem;
+}
+
+html::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+html::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+    background: #4154f1;
+}
+
+body {
+    font-feature-settings: "cv03", "cv04", "cv11";
+}
+
+.table-personalia .center-align {
+    text-align: center; /* Horizontal alignment */
+    vertical-align: middle; /* Vertical alignment */
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        top: 50%;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        top: 50%;
+        opacity: 0;
+    }
+}
+
+.modal {
+    overflow-y: auto;
+}
+
+.ts-control {
+    border: none !important;
+    padding: 2px 2px !important;
+}
+
+.dt-button.buttons-excel {
+    background-color: #28a745;
+    /* Green for Excel */
+    color: white;
+    border-radius: 5px;
+}
+
+.dt-button.buttons-excel:hover {
+    color: #1e7e34;
+    border: none;
+}
+
+.dt-button.buttons-pdf {
+    background-color: #dc3545;
+    /* Red for PDF */
+    color: white;
+    border-radius: 5px;
+}
+
+.dt-button.buttons-pdf:hover {
+    color: #dc3545;
+}
+
+.dt-search {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+    #date-day-time {
+        display: none;
+    }
+
+    .dt-search {
+        justify-content: center;
+    }
+
+    .card-header,
+    .btn-text {
+        display: none;
+    }
+}
+
+.dt-info,
+.dt-paging {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.dt-paging-button.current {
+    border-radius: 5px;
+}
+
+/* Add this to your main CSS file (e.g., public/css/app.css) */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.square-image {
+    width: 150px; /* Fixed width */
+    height: 150px; /* Fixed height to ensure 1:1 aspect ratio */
+    object-fit: cover; /* Ensures the image scales and fills the square without distortion */
+    border-radius: none; /* For a circular shape, you can use border-radius */
+}
+
+.image-container {
+    width: 200px; /* Set width based on the container's size */
+    padding-top: 200px; /* 1:1 aspect ratio with padding (square) */
+    position: relative;
+}
+
+.image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#pet-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 250px; /* Adjust based on the height of the pets */
+    pointer-events: none; /* Pets won't block user interaction */
+}
+
+.walking-pet {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 50px; /* Adjust based on pet size */
+    height: auto;
+    display: none; /* Hidden by default */
+    animation: walk linear infinite;
+}
+
+@keyframes walk {
+    0% {
+        left: -100px;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-right: 15px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+}
+input:checked + .slider {
+    background-color: #2196f3;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}

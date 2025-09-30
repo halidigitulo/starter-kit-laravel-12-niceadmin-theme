@@ -4,13 +4,17 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center mb-2" style="height: 60px">
                     <h4 class="card-title"><i class="ri-settings-line"></i> @yield('title')</h4>
+                    @can('roles.create')
+                    <div>
+                        <div class="col">
+                            <button type="button" class="btn btn-primary" id="btn-add-role">+ Add Role</button>
+                        </div>
+                    </div>
+                    @endcan
                 </div>
                 <div class="card-body">
-                    {{-- @can('roles.create') --}}
-                    <button class="btn btn-primary mb-3" id="btn-add-role">+ Add Role</button>
-                    {{-- @endcan --}}
                     <div class="table-reponsive">
                         <table class="table table-bordered table-hover table-striped table-sm" id="role-table">
                             <thead>

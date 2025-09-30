@@ -1,17 +1,20 @@
-<!-- Right bar overlay-->
-<div class="rightbar-overlay"></div>
-
-<!-- JAVASCRIPT -->
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-<script src="{{ asset('') }}libs/jquery/jquery.min.js"></script>
-<script src="{{ asset('') }}libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('') }}libs/metismenu/metisMenu.min.js"></script>
-<script src="{{ asset('') }}libs/simplebar/simplebar.min.js"></script>
-<script src="{{ asset('') }}libs/node-waves/waves.min.js"></script>
-
-<script src="{{ asset('') }}js/app.js"></script>
+<!-- Vendor JS Files -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script src="{{ asset('') }}vendor/apexcharts/apexcharts.min.js"></script>
+<script src="{{ asset('') }}vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('') }}vendor/chart.js/chart.umd.js"></script>
+<script src="{{ asset('') }}vendor/echarts/echarts.min.js"></script>
+<script src="{{ asset('') }}vendor/quill/quill.js"></script>
+<script src="{{ asset('') }}vendor/simple-datatables/simple-datatables.js"></script>
+<script src="{{ asset('') }}vendor/tinymce/tinymce.min.js"></script>
+<script src="{{ asset('') }}vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ asset('') }}js/main.js"></script>
 
 @stack('scripts')
 {{-- Tampilkan tanggal  --}}
@@ -44,7 +47,7 @@
 </script>
 <script>
     // Idle timeout duration (1 minute = 60,000 ms)
-    const idleTimeout = 1 * 60 * 1000;
+    const idleTimeout = 60 * 60 * 1000;
 
     let idleTimer;
 
