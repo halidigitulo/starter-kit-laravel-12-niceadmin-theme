@@ -8,12 +8,12 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Components / Accordion - NiceAdmin Bootstrap Template</title>
+    <title>@yield('title') | {{ $profile->nama ?? '' }} </title>
     <meta content="" name="description">
     <meta content="" name="keywords">
-
+    
     <!-- Favicons -->
-    <link href="{{ asset('') }}img/favicon.png" rel="icon">
+    <link href="{{ asset('uploads/' . $profile->logo) }}" rel="icon">
     <link href="{{ asset('') }}img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->

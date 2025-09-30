@@ -12,5 +12,5 @@
         @yield('content')
     </main><!-- End #main -->
 
-    @include('layouts.footer')
+    {{-- @include('layouts.footer') --}}
     @include('layouts.script')

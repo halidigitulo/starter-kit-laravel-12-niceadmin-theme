@@ -223,5 +223,20 @@
             $(this).find(':focus').blur();
         });
     </script>
-   
+    <script>
+         $('#modalMenu').on('shown.bs.modal', function() {
+            const selects = ['#menu_parent_id'];
+
+            selects.forEach(function(selector) {
+                new TomSelect(selector, {
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    // dropdownParent: $('#modal-personalia'), // Ensure the dropdown remains properly aligned in the modal
+                    closeAfterSelect: true // Optional: close dropdown after selecting an option
+                });
+            });
+        });
+    </script>
 @endpush
