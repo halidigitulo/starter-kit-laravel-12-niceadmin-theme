@@ -11,7 +11,7 @@
     <title>@yield('title') | {{ $profile->nama ?? '' }} </title>
     <meta content="" name="description">
     <meta content="" name="keywords">
-    
+
     <!-- Favicons -->
     <link href="{{ asset('uploads/' . $profile->logo) }}" rel="icon">
     <link href="{{ asset('') }}img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -24,14 +24,13 @@
 
     <!-- Vendor CSS Files -->
     {{-- <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet"> --}}
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
 
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
